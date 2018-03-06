@@ -1,6 +1,7 @@
 
 import json
 import re
+import csv
 
 # here I define my-json-object
 class my_json_obj :
@@ -20,7 +21,20 @@ class my_json_obj :
      print new
      self.json_updated_data['body'] = new
      
+   def add_key(self,key_name,key_value) :   # this is used to add 'soc5'
+     self.json_updated_data[key_name] = key_value
 
+
+# here I want to read the mapping scheme from csv
+my_onet_to_soc = {}
+
+with open('map_onet_soc.csv','r') as fcsv :
+   reader = csv.reader(fcsv, delimiter=',')
+   for row in reader :
+#      print row
+      my_onet_to_soc[row[0]] = row[1]
+
+#print my_onet_to_soc
 
 # below I want to read json from file
 fout = open('test-out','w')
@@ -28,8 +42,17 @@ fout = open('test-out','w')
 with open('test-inp','r') as fin :
    for line in fin:
       current = my_json_obj(line)
-      current.update_body()
-      print(current.json_updated_data['body'])
+
+      current.update_body()  # this is to remove html tags
+#      print(current.json_updated_data['body'])
+
+      onet_value = current.json_original_data['onet']
+      if onet_value in my_onet_to_soc :
+         soc5_value = my_onet_to_soc[onet_value]
+      else :
+         soc5_value = 'null'
+      current.add_key('soc5',soc5_value)  # this is to add the key 'soc5' to json
+
       json.dump(current.json_updated_data,fout)
       fout.write('\n')
       fout.flush()
