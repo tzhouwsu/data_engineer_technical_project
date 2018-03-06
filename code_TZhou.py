@@ -2,6 +2,7 @@
 import json
 import re
 import csv
+import sys
 
 # here I define my-json-object
 class my_json_obj :
@@ -17,18 +18,27 @@ class my_json_obj :
    def update_body(self) :  # this is to remove the html tags
      old = self.json_original_data['body']
      new = re.sub('<.*?>','',old)
-     print old
-     print new
+#     print old
+#     print new
      self.json_updated_data['body'] = new
      
    def add_key(self,key_name,key_value) :   # this is used to add 'soc5'
      self.json_updated_data[key_name] = key_value
 
 
+# here I'm reading file-names from command-line arguments
+if len(sys.argv) != 3 :
+   print 'use this code by:\n python {} csv-file sample-file\n'.format(sys.argv[0])
+   sys.exit()
+else :
+   fname_csv = sys.argv[1]
+   fname_sample = sys.argv[2]
+
+
 # here I want to read the mapping scheme from csv
 my_onet_to_soc = {}
 
-with open('map_onet_soc.csv','r') as fcsv :
+with open(fname_csv,'r') as fcsv :
    reader = csv.reader(fcsv, delimiter=',')
    for row in reader :
 #      print row
@@ -36,11 +46,16 @@ with open('map_onet_soc.csv','r') as fcsv :
 
 #print my_onet_to_soc
 
-# below I want to read json from file
-fout = open('test-out','w')
 
-with open('test-inp','r') as fin :
+# below I want to read json from file
+fname_output = fname_sample + ".out"
+fout = open(fname_output,'w')
+
+line_number = 0
+with open(fname_sample,'r') as fin :
    for line in fin:
+      line_number = line_number + 1
+      print line_number
       current = my_json_obj(line)
 
       current.update_body()  # this is to remove html tags
@@ -57,7 +72,6 @@ with open('test-inp','r') as fin :
       fout.write('\n')
       fout.flush()
 
-fin.close()
 fout.close()
 
 
