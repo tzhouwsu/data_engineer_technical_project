@@ -25,6 +25,15 @@ class my_json_obj :
    def add_key(self,key_name,key_value) :   # this is used to add 'soc5'
      self.json_updated_data[key_name] = key_value
 
+   def update_soc5(self,my_dict_of_map) :   # this is to add 'soc5' based on map
+     onet_value = self.json_original_data['onet']
+     if onet_value in my_dict_of_map :
+        soc5_value = my_dict_of_map[onet_value]
+     else :
+        soc5_value = 'null'
+     self.add_key('soc5',soc5_value)  # this is to add the key 'soc5' to json
+     
+
 
 # here I'm reading file-names from command-line arguments
 if len(sys.argv) != 3 :
@@ -61,12 +70,7 @@ with open(fname_sample,'r') as fin :
       current.update_body()  # this is to remove html tags
 #      print(current.json_updated_data['body'])
 
-      onet_value = current.json_original_data['onet']
-      if onet_value in my_onet_to_soc :
-         soc5_value = my_onet_to_soc[onet_value]
-      else :
-         soc5_value = 'null'
-      current.add_key('soc5',soc5_value)  # this is to add the key 'soc5' to json
+      current.update_soc5(my_onet_to_soc) # this is to add 'soc5'
 
       json.dump(current.json_updated_data,fout)
       fout.write('\n')
