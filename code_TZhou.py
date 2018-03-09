@@ -26,11 +26,14 @@ class my_json_obj :
      self.json_updated_data[key_name] = key_value
 
    def update_soc5(self,my_dict_of_map) :   # this is to add 'soc5' based on map
-     onet_value = self.json_original_data['onet']
-     if onet_value in my_dict_of_map :
-        soc5_value = my_dict_of_map[onet_value]
+     if 'onet' in self.json_original_data : 
+       onet_value = self.json_original_data['onet']
+       if onet_value in my_dict_of_map :
+          soc5_value = my_dict_of_map[onet_value]
+       else :
+          soc5_value = 'null'
      else :
-        soc5_value = 'null'
+       soc5_value = 'null'
      self.add_key('soc5',soc5_value)  # this is to add the key 'soc5' to json
      
 
